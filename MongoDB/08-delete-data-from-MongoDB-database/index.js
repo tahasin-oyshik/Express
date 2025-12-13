@@ -18,6 +18,10 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  rating: {
+    type: Number,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
@@ -54,10 +58,11 @@ app.get('/', (request, response) => {
 // CRUD -> create a product
 app.post('/products', async (request, response) => {
   try {
-    const { title, price, description } = request.body;
+    const { title, price, rating, description } = request.body;
     const newProduct = new Product({
       title,
       price,
+      rating,
       description,
     });
     const productData = await newProduct.save();
@@ -70,7 +75,18 @@ app.post('/products', async (request, response) => {
 // CRUD -> return all the products
 app.get('/products', async (request, response) => {
   try {
-    const products = await Product.find();
+    const { price, rating } = request.query;
+    let products;
+    if (price && rating) {
+      products = await Product.find({
+        $and: [{ price: { $gt: price } }, { rating: { $gt: rating } }],
+      })
+        .sort({ price: 1 })
+        .select({ title: 1, _id: 0 });
+    } else {
+      products = await Product.find().sort({ price: 1 }).select({ title: 1, _id: 0 });
+    }
+
     if (products) {
       response.status(200).send({ success: true, message: 'return all products', data: products });
     } else {

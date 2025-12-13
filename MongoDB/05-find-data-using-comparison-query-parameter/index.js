@@ -70,7 +70,14 @@ app.post('/products', async (request, response) => {
 // CRUD -> return all the products
 app.get('/products', async (request, response) => {
   try {
-    const products = await Product.find();
+    const { price } = request.query;
+    let products;
+    if (price) {
+      products = await Product.find({ price: { $gt: price } });
+    } else {
+      products = await Product.find();
+    }
+
     if (products) {
       response.status(200).send({ success: true, message: 'return all products', data: products });
     } else {
