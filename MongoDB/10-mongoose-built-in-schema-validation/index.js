@@ -125,6 +125,35 @@ app.delete('/products/:id', async (request, response) => {
   }
 });
 
+// CRUD -> update a product based on id
+app.put('/products/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { title, price, rating, description } = request.body;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          title,
+          price,
+          rating,
+          description,
+        },
+      },
+      { new: true },
+    );
+    if (updatedProduct) {
+      response
+        .status(200)
+        .send({ success: true, message: 'updated single product', data: updatedProduct });
+    } else {
+      response.status(404).send({ success: false, message: 'product was not found with this id' });
+    }
+  } catch (error) {
+    response.status(500).send({ message: error.message });
+  }
+});
+
 // MongoDB Structure: DATABASE → collections → document
 
 // POST: /products -> create a product
