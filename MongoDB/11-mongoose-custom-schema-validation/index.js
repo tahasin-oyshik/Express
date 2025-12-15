@@ -21,6 +21,12 @@ const productsSchema = new mongoose.Schema({
     //   values: ['vivo', 'samsung'],
     //   message: '{VALUE} is not supported',
     // },
+    validate: {
+      validator: (v) => {
+        return v.length == 5;
+      },
+      message: (props) => `${props.value} is not valid title`,
+    },
   },
   price: {
     type: Number,
@@ -32,13 +38,31 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // email: {
-  //   type: String,
-  //   unique: true,
-  // },
   description: {
     type: String,
     required: true,
+  },
+  phone: {
+    type: String,
+    required: [true, 'phone number is required'],
+    validate: {
+      validator: (v) => {
+        const phoneRegex = /^(?:\+8801|01)[3-9]\d{8}$/;
+        return phoneRegex.test(v);
+      },
+      message: (props) => `${props.value} is not a valid phone number`,
+    },
+  },
+  email: {
+    type: String,
+    required: [true, 'email is required'],
+    validate: {
+      validator: (v) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(v);
+      },
+      message: (props) => `${props.value} is not a valid email`,
+    },
   },
   createdAt: {
     type: Date,
@@ -72,12 +96,14 @@ app.get('/', (request, response) => {
 // CRUD -> create a product
 app.post('/products', async (request, response) => {
   try {
-    const { title, price, rating, description } = request.body;
+    const { title, price, rating, description, phone, email } = request.body;
     const newProduct = new Product({
       title,
       price,
       rating,
       description,
+      phone,
+      email,
     });
     const productData = await newProduct.save();
     response.status(201).send(productData);
@@ -143,7 +169,7 @@ app.delete('/products/:id', async (request, response) => {
 app.put('/products/:id', async (request, response) => {
   try {
     const { id } = request.params;
-    const { title, price, rating, description } = request.body;
+    const { title, price, rating, description, phone, email } = request.body;
     const updatedProduct = await Product.findByIdAndUpdate(
       { _id: id },
       {
@@ -152,6 +178,8 @@ app.put('/products/:id', async (request, response) => {
           price,
           rating,
           description,
+          phone,
+          email,
         },
       },
       { new: true },
