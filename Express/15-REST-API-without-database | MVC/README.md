@@ -3,7 +3,7 @@ Step-by-Step File Creation Order:
 
 1. Initialize Project
    npm init -y
-   npm install express cors body-parser uuid nodemon
+   npm install express cors body-parser uuid nodemon dotenv
 
 2. Create package.json (Already done by npm init)
    Add start script: "start": "nodemon index.js"
