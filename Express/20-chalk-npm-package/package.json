@@ -1,5 +1,5 @@
 {
-  "name": "19-morgan-npm-package-http-request-logger",
+  "name": "20-chalk-npm-package",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.2.1",
-    "morgan": "^1.10.1"
+    "chalk": "^4.1.2",
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
