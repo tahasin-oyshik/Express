@@ -1,0 +1,4 @@
+// Register -> form username, password, register button
+
+// Login -> form username, password, login button ->
+yes, profile component; no, login
